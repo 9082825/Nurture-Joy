@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NurtureJoy – Weekly Digest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --primary: #5b7cfa;
+      --primary-soft: #ecf0ff;
+      --accent: #f7a8c3;
+      --danger-soft: #ffe9ea;
+      --danger: #de3b5b;
+      --text-main: #1f2933;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --radius-lg: 18px;
+      --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #fdf2ff 0, #f5f7fb 55%, #eef2ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 430px;
+      background: linear-gradient(145deg, #ffffff, #f9fbff);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .app-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      background: linear-gradient(135deg, #fdf5ff, #f0f4ff);
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffe4f1, #f7a8c3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .app-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title span:first-child {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .app-title span:last-child {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .app-header-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(91, 124, 250, 0.08);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .avatar-small {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fee2e2, #bfdbfe);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .digest-container {
+      padding: 16px 18px 18px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: radial-gradient(circle at top, #fdfbff 0, #ffffff 65%);
+    }
+
+    .week-header {
+      margin-bottom: 16px;
+    }
+
+    .week-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .week-main {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .week-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .week-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .progress-wrapper {
+      margin-top: 4px;
+    }
+
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #5b7cfa, #f7a8c3);
+      transition: width 0.5s ease;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 12px 13px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .card-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .list {
+      list-style: none;
+      margin-top: 4px;
+    }
+
+    .list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .list li::before {
+      content: "•";
+      position: absolute;
+      left: 3px;
+      top: 0;
+      color: var(--primary);
+    }
+
+    .actions-list {
+      list-style: none;
+      margin-top: 6px;
+    }
+
+    .actions-list li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .action-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      border: 1px solid var(--border-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease,
+        transform 0.08s ease;
+    }
+
+    .action-checkbox span {
+      display: none;
+      font-size: 11px;
+      color: white;
+    }
+
+    .actions-list li.completed .action-checkbox {
+      background: linear-gradient(120deg, #5b7cfa, #f7a8c3);
+      border-color: transparent;
+      transform: scale(0.96);
+    }
+
+    .actions-list li.completed .action-checkbox span {
+      display: block;
+    }
+
+    .actions-list li.completed .action-label {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .warning-card {
+      background-color: var(--danger-soft);
+      border-color: rgba(248, 113, 113, 0.35);
+    }
+
+    .warning-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--danger);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+    }
+
+    .appointment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .appt-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .appt-main span:first-child {
+      font-weight: 500;
+    }
+
+    .appt-main span:last-child {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-secondary {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 6px 10px;
+      font-size: 11px;
+      background-color: white;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #f9fafb;
+      box-shadow: 0 4px 10px rgba(148, 163, 184, 0.32);
+      transform: translateY(-0.5px);
+    }
+
+    .quick-actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn-quick {
+      flex: 1 1 32%;
+      padding: 7px 8px;
+      border-radius: 999px;
+      border: none;
+      font-size: 11px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #e0ecff, #fdf2ff);
+      color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow: 0 3px 8px rgba(148, 163, 184, 0.3);
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+
+    .btn-quick span.icon {
+      font-size: 13px;
+    }
+
+    .btn-quick:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 14px rgba(148, 163, 184, 0.45);
+    }
+
+    .partner-tip-text {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .link-inline {
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .link-inline:hover {
+      text-decoration: underline;
+    }
+
+    .tag-partner {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(247, 168, 195, 0.16);
+      color: #be185d;
+      margin-left: auto;
+    }
+
+    /* Scrollbar – subtle, mobile-friendly */
+    .digest-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .digest-container::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header-left">
+        <div class="logo-circle">NJ</div>
+        <div class="app-title">
+          <span>NurtureJoy</span>
+          <span>Weekly Digest</span>
+        </div>
+      </div>
+      <div class="app-header-right">
+        <div class="pill-tag">Prototype</div>
+        <div class="avatar-small">L</div>
+      </div>
+    </header>
+
+    <main class="digest-container">
+      <!-- WEEK HEADER -->
+      <section class="week-header">
+        <div class="week-row">
+          <div>
+            <div class="week-main" id="weekLabel">Week 0</div>
+            <div class="week-sub" id="dueDateLabel">
+              Estimated due date: —
+            </div>
+          </div>
+          <div class="week-badge" id="trimesterLabel">Trimester —</div>
+        </div>
+        <div class="progress-wrapper">
+          <div class="progress-label-row">
+            <span id="progressLabelLeft">0 of 40 weeks</span>
+            <span id="progressLabelRight">0% complete</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BABY DEVELOPMENT -->
+      <section class="card" id="cardBaby">
+        <div class="card-header">
+          <div class="card-title">Baby's development</div>
+          <span class="card-pill" id="babySizeLabel">size: —</span>
+        </div>
+        <div class="card-body" id="babyDevText">
+          <!-- filled by JS -->
+        </div>
+      </section>
+
+      <!-- MOM CHANGES -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Changes in your body</div>
+        </div>
+        <div class="card-body">
+          <ul class="list" id="momChangesList"></ul>
+        </div>
+      </section>
+
+      <!-- ACTIONS CHECKLIST -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">This week’s actions</div>
+        </div>
+        <div class="card-body">
+          <ul class="actions-list" id="actionsList"></ul>
+          <p class="muted">These are general suggestions, not medical advice.</p>
+        </div>
+      </section>
+
+      <!-- WARNING SIGNS -->
+      <section class="card warning-card">
+        <div class="card-header">
+          <div class="warning-icon">!</div>
+          <div class="card-title">Watch out for</div>
+        </div>
+        <div class="card-body">
+          <ul class="list" id="warningList"></ul>
+        </div>
+      </section>
+
+      <!-- APPOINTMENT -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Next appointment</div>
+        </div>
+        <div class="card-body">
+          <div class="appointment-row">
+            <div class="appt-main">
+              <span id="apptWhen">—</span>
+              <span id="apptWith">—</span>
+            </div>
+            <button class="btn-secondary" type="button" onclick="viewAllAppointments()">
+              View all
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUICK ACTIONS -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Quick actions</div>
+        </div>
+        <div class="card-body">
+          <div class="quick-actions-row">
+            <button class="btn-quick" type="button" onclick="quickLog('symptoms')">
+              <span class="icon">✏️</span>
+              <span>Log symptoms</span>
+            </button>
+            <button class="btn-quick" type="button" onclick="quickLog('mood')">
+              <span class="icon">😊</span>
+              <span>Log mood</span>
+            </button>
+            <button class="btn-quick" type="button" onclick="quickLog('bp')">
+              <span class="icon">💓</span>
+              <span>Log blood pressure</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARTNER TIPS -->
+      <section class="card">
+        <div class="card-header" style="align-items: center;">
+          <div class="card-title">Partner support this week</div>
+          <span class="tag-partner">Partner view</span>
+        </div>
+        <div class="card-body">
+          <p class="partner-tip-text" id="partnerTipText"></p>
+          <a href="#" class="link-inline" onclick="showMorePartnerTips(event)">
+            View more partner tips
+            <span>›</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // --- MOCK DATA (replace with API response later) ---
+    const weeklyData = {
+      week: 9,
+      trimester: 1,
+      dueDate: "May 12, 2026",
+      progressPercentage: (9 / 40) * 100,
+      babySizeLabel: "Grape • ~2.3 cm",
+      babyDevSummary:
+        "Your baby is about the size of a grape. Major organs are forming, and basic facial features are beginning to appear.",
+      momChanges: [
+        "More fatigue and stronger morning sickness are common.",
+        "You may notice heightened sensitivity to smell.",
+        "Mild cramping or pulling sensations can occur as your uterus grows."
+      ],
+      actions: [
+        "Take prenatal vitamins every day.",
+        "Drink 6–8 glasses of water.",
+        "Eat small, frequent meals to help with nausea.",
+        "Book or confirm your first prenatal visit if you haven’t already."
+      ],
+      warningSigns: [
+        "Heavy bleeding or passing large clots.",
+        "Severe abdominal pain or cramping that does not ease.",
+        "High fever or inability to keep any fluids down."
+      ],
+      appointment: {
+        when: "Tue, Nov 26 • 10:30 AM",
+        with: "Dr. Michael (OB-GYN, Community Hospital)"
+      },
+      partnerTips: [
+        "Offer to handle a few household tasks so she can rest when nausea or fatigue hits.",
+        "Check in emotionally: ask how she is coping and really listen without trying to fix everything immediately.",
+        "Prepare small snacks she can tolerate and keep them within easy reach."
+      ]
+    };
+
+    // --- RENDER LOGIC ---
+    function calculateTrimesterLabel(trimester) {
+      if (trimester === 1) return "Trimester 1 • First trimester";
+      if (trimester === 2) return "Trimester 2 • Second trimester";
+      return "Trimester 3 • Third trimester";
+    }
+
+    function renderWeeklyDigest(data) {
+      // Header
+      document.getElementById("weekLabel").textContent = `Week ${data.week}`;
+      document.getElementById(
+        "dueDateLabel"
+      ).textContent = `Estimated due date: ${data.dueDate}`;
+      document.getElementById("trimesterLabel").textContent =
+        calculateTrimesterLabel(data.trimester);
+
+      const progress = Math.round(data.progressPercentage);
+      document.getElementById(
+        "progressLabelLeft"
+      ).textContent = `${data.week} of 40 weeks`;
+      document.getElementById(
+        "progressLabelRight"
+      ).textContent = `${progress}% complete`;
+      document.getElementById(
+        "progressFill"
+      ).style.width = `${Math.min(progress, 100)}%`;
+
+      // Baby section
+      document.getElementById("babySizeLabel").textContent = data.babySizeLabel;
+      document.getElementById("babyDevText").textContent = data.babyDevSummary;
+
+      // Mom changes
+      const momList = document.getElementById("momChangesList");
+      momList.innerHTML = "";
+      data.momChanges.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        momList.appendChild(li);
+      });
+
+      // Actions checklist
+      const actionsList = document.getElementById("actionsList");
+      actionsList.innerHTML = "";
+      data.actions.forEach((actionText, index) => {
+        const li = document.createElement("li");
+
+        const box = document.createElement("div");
+        box.className = "action-checkbox";
+        box.dataset.index = index;
+        box.innerHTML = "<span>✓</span>";
+
+        const label = document.createElement("span");
+        label.className = "action-label";
+        label.textContent = actionText;
+
+        box.addEventListener("click", () => {
+          li.classList.toggle("completed");
+        });
+
+        li.appendChild(box);
+        li.appendChild(label);
+        actionsList.appendChild(li);
+      });
+
+      // Warning signs
+      const warningList = document.getElementById("warningList");
+      warningList.innerHTML = "";
+      data.warningSigns.forEach((w) => {
+        const li = document.createElement("li");
+        li.textContent = w;
+        warningList.appendChild(li);
+      });
+
+      // Appointment
+      document.getElementById("apptWhen").textContent = data.appointment.when;
+      document.getElementById("apptWith").textContent = data.appointment.with;
+
+      // Partner tips preview (first tip)
+      const tip = data.partnerTips[0] || "Support your partner in a way that feels right for both of you.";
+      document.getElementById("partnerTipText").textContent = tip;
+    }
+
+    // Quick actions handlers (placeholder for prototype)
+    function quickLog(type) {
+      const labelMap = {
+        symptoms: "symptoms",
+        mood: "mood",
+        bp: "blood pressure"
+      };
+      alert(`Open ${labelMap[type]} logging screen (prototype placeholder).`);
+    }
+
+    function viewAllAppointments() {
+      alert("Show full appointments list (prototype placeholder).");
+    }
+
+    function showMorePartnerTips(event) {
+      event.preventDefault();
+      const tips = weeklyData.partnerTips
+        .map((t, i) => `${i + 1}. ${t}`)
+        .join("\n\n");
+      alert("Partner tips for this week:\n\n" + tips);
+    }
+
+    // Initial render on load
+    renderWeeklyDigest(weeklyData);
+  </script>
+</body>
+</html>
