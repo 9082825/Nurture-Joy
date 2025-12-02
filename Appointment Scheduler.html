@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Appointment Scheduler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      background: #f5f5f5;
+    }
+
+    /* Sidebar Form */
+    #form-container {
+      width: 320px;
+      background: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+
+    /* Calendar */
+    #calendar-container {
+      flex: 1;
+      padding: 20px;
+    }
+
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .day {
+      background: white;
+      padding: 10px;
+      min-height: 100px;
+      border-radius: 6px;
+      position: relative;
+      border: 1px solid #e2e2e2;
+    }
+
+    .day-number {
+      font-weight: bold;
+    }
+
+    /* Appointment chips */
+    .appt {
+      margin-top: 5px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .upcoming { background: #1976d2; }
+    .completed { background: #2e7d32; }
+    .missed { background: #c62828; }
+    .cancelled { background: #757575; }
+
+    /* Modal */
+    #modal {
+      display: none;
+      position: fixed;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+    #modal-content {
+      background: white;
+      padding: 20px;
+      width: 300px;
+      border-radius: 6px;
+    }
+    #modal button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================ -->
+  <!--        BOOKING FORM          -->
+  <!-- ============================ -->
+  <div id="form-container">
+    <h2>Book Appointment</h2>
+
+    <label>Your Name</label>
+    <input id="name" value="Amaka">
+
+    <label>Visit Type</label>
+    <select id="visitType">
+      <option>Prenatal Visit</option>
+      <option>Checkup</option>
+      <option>Ultrasound</option>
+    </select>
+
+    <label>Date & Time</label>
+    <input type="datetime-local" id="dateTime">
+
+    <button onclick="bookAppointment()">Book Appointment</button>
+  </div>
+
+  <!-- ============================ -->
+  <!--           CALENDAR           -->
+  <!-- ============================ -->
+  <div id="calendar-container">
+    <h2>Appointment Calendar</h2>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- ============================ -->
+  <!--             MODAL            -->
+  <!-- ============================ -->
+  <div id="modal">
+    <div id="modal-content">
+      <h3 id="modal-title"></h3>
+      <button onclick="markCompleted()">Mark Completed</button>
+      <button onclick="cancelAppointment()">Cancel</button>
+      <button onclick="reschedule()">Reschedule</button>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+<script>
+/******************************************************
+ * In-Browser Appointment Storage
+ ******************************************************/
+let appointments = [];
+let selectedAppt = null;
+
+/******************************************************
+ * Render Calendar (current month)
+ ******************************************************/
+function renderCalendar() {
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+  
+  let today = new Date();
+  let year = today.getFullYear();
+  let month = today.getMonth();
+
+  let first = new Date(year, month, 1);
+  let last = new Date(year, month + 1, 0);
+  let startDay = first.getDay();
+  let days = last.getDate();
+
+  // Fill blank days
+  for (let i = 0; i < startDay; i++) {
+    cal.innerHTML += `<div class="day"></div>`;
+  }
+
+  // Fill calendar days
+  for (let d = 1; d <= days; d++) {
+    const dayDiv = document.createElement("div");
+    dayDiv.className = "day";
+    dayDiv.innerHTML = `<div class='day-number'>${d}</div>`;
+
+    let dayDate = new Date(year, month, d);
+
+    // Add appointments for this day
+    appointments.forEach((appt, index) => {
+      let adate = new Date(appt.dateTime);
+      if (adate.toDateString() === dayDate.toDateString()) {
+        const chip = document.createElement("div");
+        chip.className = `appt ${appt.status}`;
+        chip.textContent = `${appt.visitType} (${adate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})})`;
+        chip.onclick = () => openModal(index);
+        dayDiv.appendChild(chip);
+      }
+    });
+
+    cal.appendChild(dayDiv);
+  }
+}
+
+/******************************************************
+ * Booking Logic
+ ******************************************************/
+function bookAppointment() {
+  const name = document.getElementById("name").value;
+  const visitType = document.getElementById("visitType").value;
+  const dateTime = document.getElementById("dateTime").value;
+
+  if (!dateTime) {
+    alert("Please choose a date and time.");
+    return;
+  }
+
+  appointments.push({
+    name,
+    visitType,
+    dateTime,
+    status: "upcoming"
+  });
+
+  alert("Appointment booked!");
+  renderCalendar();
+}
+
+/******************************************************
+ * Modal Functions
+ ******************************************************/
+function openModal(index) {
+  selectedAppt = index;
+  const appt = appointments[index];
+  document.getElementById("modal-title").innerText =
+    `${appt.visitType} - ${new Date(appt.dateTime).toLocaleString()}`;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function markCompleted() {
+  appointments[selectedAppt].status = "completed";
+  closeModal();
+  renderCalendar();
+}
+
+function cancelAppointment() {
+  appointments[selectedAppt].status = "cancelled";
+  closeModal();
+  renderCalendar();
+}
+
+function reschedule() {
+  const newDate = prompt("Enter new date/time (YYYY-MM-DD HH:MM)");
+  if (!newDate) return;
+
+  const formatted = newDate.replace(" ", "T");
+  appointments[selectedAppt].dateTime = formatted;
+  appointments[selectedAppt].status = "upcoming";
+
+  closeModal();
+  renderCalendar();
+}
+
+/******************************************************
+ * Mark Missed Events (runs every minute)
+ ******************************************************/
+setInterval(() => {
+  const now = new Date();
+  appointments.forEach(appt => {
+    let apptTime = new Date(appt.dateTime);
+    if (appt.status === "upcoming" && apptTime < now) {
+      appt.status = "missed";
+      if (confirm(`You missed your appointment at ${apptTime.toLocaleString()}. Rebook?`)) {
+        // simulate rebooking
+        let newDate = prompt("Enter new date (YYYY-MM-DD HH:MM)");
+        if (newDate) {
+          appt.dateTime = newDate.replace(" ", "T");
+          appt.status = "upcoming";
+        }
+      }
+    }
+  });
+  renderCalendar();
+}, 60000);
+
+/******************************************************
+ * Initial Draw
+ ******************************************************/
+renderCalendar();
+</script>
+</body>
+</html>
