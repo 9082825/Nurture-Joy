@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Appointment – Nurture Joy</title>
+
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: radial-gradient(circle at top left, #FCE7F3, #FDF2FF, #ECFEFF);
+            padding: 32px;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #7C3AED;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 16px 40px rgba(148,163,184,0.25);
+            backdrop-filter: blur(16px);
+            margin-bottom: 24px;
+        }
+        .button-soft {
+            margin-top: 12px;
+            padding: 9px 14px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(90deg, #A855F7, #EC4899);
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .button-soft:hover { opacity: 0.95; }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #D1D5DB;
+            font-size: 14px;
+        }
+
+        .button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #A855F7, #EC4899);
+            color: white;
+            width: 180px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* DOCTOR CARD */
+        .doctor-card {
+            background: white;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            gap: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .doctor-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .doctor-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4B0082;
+        }
+
+        .doctor-special {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .rating {
+            font-size: 14px;
+            color: #FBBF24;
+            margin-top: 4px;
+        }
+
+        .edu {
+            font-size: 13px;
+            color: #7C3AED;
+            margin-top: 6px;
+        }
+
+        .availability {
+            font-size: 13px;
+            margin-top: 8px;
+            color: #047857;
+        }
+
+        .clinic {
+            font-size: 13px;
+            margin-top: 4px;
+            color: #6B7280;
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #7C3AED;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Back Navigation -->
+    <div class="back-btn" onclick="window.location.href='/'">← Back to Dashboard</div>
+
+    <div class="title">Book a Doctor Appointment</div>
+    <div class="subtitle">Find nearby maternity-friendly doctors and clinics.</div>
+
+    <!-- SEARCH FORM -->
+    <div class="card">
+        <div class="input-row">
+            <input type="text" placeholder="Street Address">
+            <input type="text" placeholder="City">
+        </div>
+
+        <div class="input-row">
+            <select>
+                <option>Select Province</option>
+                <option>Ontario</option>
+                <option>British Columbia</option>
+                <option>Alberta</option>
+                <option>Quebec</option>
+            </select>
+
+            <input type="text" placeholder="Postal Code">
+        </div>
+
+        <div class="input-row">
+            <input type="date">
+            <input type="text" placeholder="Search by specialty (optional)">
+        </div>
+
+        <button class="button">Search Doctors</button>
+    </div>
+
+    <!-- DOCTOR RESULTS -->
+    <div class="doctor-card">
+        <img class="doctor-img" src="https://i.pravatar.cc/150?img=26">
+        <div>
+            <div class="doctor-name">Dr. Amara Ndukwe</div>
+            <div class="doctor-special">Obstetrician & Gynecologist</div>
+            <div class="rating">★★★★★ 4.9</div>
+            <div class="edu">MBBS, MD – Women’s Health</div>
+            <div class="availability">Available: Mon–Fri (9 AM – 3 PM)</div>
+            <div class="clinic">Clinic: Sunrise Women Care, Waterloo ON</div>
+            <button class="button-soft" style="float: left;" >Book Appointment</button>
+        </div>
+    </div>
+
+    <div class="doctor-card">
+        <img class="doctor-img" src="https://i.pravatar.cc/150?img=5">
+        <div>
+            <div class="doctor-name">Dr. Sofia Martinez</div>
+            <div class="doctor-special">Prenatal & Maternal Care Specialist</div>
+            <div class="rating">★★★★★ 4.8</div>
+            <div class="edu">MBBS, MD – Maternal Medicine</div>
+            <div class="availability">Available: Tue, Thu, Sat</div>
+            <div class="clinic">Clinic: Harmony Birth Centre, Kitchener ON</div>
+            <button class="button-soft" style="float: left;" >Book Appointment</button>
+        </div>
+    </div>
+
+    <div class="doctor-card">
+        <img class="doctor-img" src="https://i.pravatar.cc/150?img=32">
+        <div>
+            <div class="doctor-name">Dr. Priya Anand</div>
+            <div class="doctor-special">Fertility & Pregnancy Care</div>
+            <div class="rating">★★★★☆ 4.6</div>
+            <div class="edu">MBBS, MD – Reproductive Health</div>
+            <div class="availability">Available: Mon–Sat</div>
+            <div class="clinic">Clinic: Blossom Family Clinic, Guelph ON</div>
+            <button class="button-soft" style="float: left;" >Book Appointment</button>
+        </div>
+        
+    </div>
+
+</div>
+
+</body>
+</html>
